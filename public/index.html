@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            height: 100vh;
+            width: 100vw;
+            background-color: black;
+            margin: 0rem;
+            overflow: hidden;
+        }
+        #image-track > .image {
+            width: 40vmin;
+            height: 56vmin;
+            object-fit: cover;
+            object-position: 100% 50%;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+        #image-track {
+            display: flex;
+            gap: 4vmin;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(0%, -50%);
+        }
+    </style>
+</head>
+<body>
+    <!-- https://camillemormal.com/ -->
+    <!-- https://www.youtube.com/watch?v=PkADl0HubMY -->
+    <div id="image-track" data-mouse-down-at="0" data-prev-percentage="0">
+        <img class="image" draggable=false src="https://images.unsplash.com/photo-1669935874092-f2632a30c89c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDEyfDZzTVZqVExTa2VRfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60" />
+        <img class="image" draggable=false src="https://images.unsplash.com/photo-1669918209760-91ae15120a97?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDEzfDZzTVZqVExTa2VRfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60" />
+        <img class="image" draggable=false src="https://images.unsplash.com/photo-1669920687377-537d98f0d837?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDE2fDZzTVZqVExTa2VRfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60" />
+        <img class="image" draggable=false src="https://images.unsplash.com/photo-1669649265855-7c3f10453f03?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDMwfDZzTVZqVExTa2VRfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60" />
+        <img class="image" draggable=false src="https://images.unsplash.com/photo-1669749268241-fd5e780d7f39?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDM3fDZzTVZqVExTa2VRfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60" />
+        <img class="image" draggable=false src="https://images.unsplash.com/photo-1669473866155-acae8043286d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHx0b3BpYy1mZWVkfDUzfDZzTVZqVExTa2VRfHxlbnwwfHx8fA%3D%3D&auto=format&fit=crop&w=500&q=60" />
+    </div>
+    <script>
+        const track = document.getElementById('image-track');
+
+        // Track mouse position
+        window.onmousedown = e => {
+            track.dataset.mouseDownAt = e.clientX;
+        }
+        window.onmouseup = e => {
+            track.dataset.mouseDownAt = '0';
+            track.dataset.prevPercentage = track.dataset.percentage;
+        }
+
+        window.onmousemove = e => {
+            if (track.dataset.mouseDownAt === '0') return;
+
+            const mouseDelta = parseFloat(track.dataset.mouseDownAt) - e.clientX
+                maxDelta = window.innerWidth / 2;
+            const percentage = (mouseDelta / maxDelta ) * -100,
+                nextPercentage = parseFloat(track.dataset.prevPercentage) + percentage;
+
+            track.dataset.percentage = nextPercentage;
+
+            track.animate(
+                {transform: `translate(${nextPercentage}%, -50%)`},
+                {duration: 1200, fill: "forwards"}
+            );
+
+            for(const image of track.getElementsByClassName('image')) {
+                image.animate(
+                    {objectPosition: `${nextPercentage + 100}% 50%`},
+                    {duration: 1200, fill: "forwards"}
+                )
+            }
+        }
+    </script>
+</body>
+</html>
